@@ -12,6 +12,7 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.imageio.ImageIO;
@@ -30,6 +31,7 @@ public class VentanaPokedex extends javax.swing.JFrame {
     ResultSet resultadoConsulta;
     Connection conexion;
     
+    HashMap<String, Pokemon> listaPokemons = new HashMap();
     
     @Override
     public void paint(Graphics g){
@@ -56,20 +58,44 @@ public class VentanaPokedex extends javax.swing.JFrame {
                 imagenPokemon.getHeight());
         Graphics2D g2 = buffer1.createGraphics();
         
-        dibujaElPokemonQueEstaEnLaPosicion(30);
+        dibujaElPokemonQueEstaEnLaPosicion(-1);
         
         try{
             Class.forName("com.mysql.jdbc.Driver");
-            conexion = DriverManager
-                    .getConnection("jdbc:mysql://127.0.0.1/test",
-                            "root",
-                            "");
+            conexion = DriverManager.getConnection("jdbc:mysql://127.0.0.1/test", "root", "");
             estado = conexion.createStatement();
+            resultadoConsulta = estado.executeQuery("Select * from pokemon");
+            System.out.println("Se ha conectado bien :D");
+            
+            while (resultadoConsulta.next()) {
+                Pokemon p = new Pokemon();
+                p.nombre = resultadoConsulta.getString(2);
+                p.numPokedex = resultadoConsulta.getString(1);
+                p.altura = resultadoConsulta.getString(3);
+                p.descripcionPokemon = resultadoConsulta.getString(16);
+                p.peso = resultadoConsulta.getString(4);
+                p.habitat = resultadoConsulta.getString(6);
+                p.especie = resultadoConsulta.getString(5);
+                p.tipo1 = resultadoConsulta.getString(7);
+                p.tipo2 = resultadoConsulta.getString(8);
+                p.habilidad = resultadoConsulta.getString(9);
+                p.mov1 = resultadoConsulta.getString(10);
+                p.mov2 = resultadoConsulta.getString(11);
+                p.mov3 = resultadoConsulta.getString(12);
+                p.mov4 = resultadoConsulta.getString(13);
+
+                listaPokemons.put(resultadoConsulta.getString(1), p);
+            }
+            
+            
         }
         catch (Exception e){
             System.out.println(e.getMessage());
             System.out.println("hay un error");
         }
+        
+         
+        
     }
 
     private void dibujaElPokemonQueEstaEnLaPosicion(int posicion){
@@ -110,8 +136,21 @@ public class VentanaPokedex extends javax.swing.JFrame {
         izq = new javax.swing.JButton();
         der = new javax.swing.JButton();
         nombrePokemon = new javax.swing.JLabel();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel2 = new javax.swing.JLabel();
+        Nombre = new javax.swing.JLabel();
+        alturaPokemon = new javax.swing.JLabel();
+        altura = new javax.swing.JLabel();
+        pesoPokemon = new javax.swing.JLabel();
+        Peso = new javax.swing.JLabel();
+        habitatPokemon = new javax.swing.JLabel();
+        Habitat = new javax.swing.JLabel();
+        especiePokemon = new javax.swing.JLabel();
+        Especie = new javax.swing.JLabel();
+        tipoPokemon1 = new javax.swing.JLabel();
+        tipoPokemon2 = new javax.swing.JLabel();
+        Tipos = new javax.swing.JLabel();
+        descripcion = new javax.swing.JTextArea();
+        shiny = new javax.swing.JToggleButton();
+        Pokedex = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
@@ -152,13 +191,51 @@ public class VentanaPokedex extends javax.swing.JFrame {
         getContentPane().add(der, new org.netbeans.lib.awtextra.AbsoluteConstraints(210, 470, 40, 30));
 
         nombrePokemon.setForeground(new java.awt.Color(255, 0, 0));
-        getContentPane().add(nombrePokemon, new org.netbeans.lib.awtextra.AbsoluteConstraints(420, 400, 90, 30));
+        getContentPane().add(nombrePokemon, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 400, 80, 30));
 
-        jLabel1.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pokedex.png"))); // NOI18N
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, -1, -1));
+        Nombre.setText("Nombre:");
+        getContentPane().add(Nombre, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 406, -1, 20));
+        getContentPane().add(alturaPokemon, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 440, 40, 20));
 
-        jLabel2.setText("jLabel2");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 410, -1, -1));
+        altura.setText("Altura:");
+        getContentPane().add(altura, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 440, -1, -1));
+        getContentPane().add(pesoPokemon, new org.netbeans.lib.awtextra.AbsoluteConstraints(350, 470, 40, 20));
+
+        Peso.setText("Peso:");
+        getContentPane().add(Peso, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 470, -1, 20));
+        getContentPane().add(habitatPokemon, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 410, 50, 20));
+
+        Habitat.setText("Habitat:");
+        getContentPane().add(Habitat, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 410, -1, -1));
+        getContentPane().add(especiePokemon, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 440, 50, 20));
+
+        Especie.setText("Especie:");
+        getContentPane().add(Especie, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 440, 50, 20));
+        getContentPane().add(tipoPokemon1, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 470, 50, 20));
+        getContentPane().add(tipoPokemon2, new org.netbeans.lib.awtextra.AbsoluteConstraints(510, 490, 50, 20));
+
+        Tipos.setText("Tipos:");
+        getContentPane().add(Tipos, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 470, -1, 20));
+
+        descripcion.setOpaque(false);
+        descripcion.setEditable(false);
+        descripcion.setColumns(20);
+        descripcion.setRows(5);
+        getContentPane().add(descripcion, new org.netbeans.lib.awtextra.AbsoluteConstraints(300, 520, 280, -1));
+
+        shiny.setOpaque(false);
+        shiny.setContentAreaFilled(false);
+        shiny.setBorderPainted(false);
+        shiny.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        shiny.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                shinyActionPerformed(evt);
+            }
+        });
+        getContentPane().add(shiny, new org.netbeans.lib.awtextra.AbsoluteConstraints(740, 450, 70, 80));
+
+        Pokedex.setIcon(new javax.swing.ImageIcon(getClass().getResource("/imagenes/pokedex.png"))); // NOI18N
+        getContentPane().add(Pokedex, new org.netbeans.lib.awtextra.AbsoluteConstraints(0, 10, -1, -1));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -174,24 +251,44 @@ public class VentanaPokedex extends javax.swing.JFrame {
     private void derActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_derActionPerformed
 
         dibujaElPokemonQueEstaEnLaPosicion(contador);
-        
-        try {
-            resultadoConsulta = estado.executeQuery("select * from pokemon where id=" + (contador+1));
-            if (resultadoConsulta.next()){
-                nombrePokemon.setText(resultadoConsulta.getString(2));
-            }
-            else{
-                nombrePokemon.setText("Este pokemon no figura en la pokedex");
-            }
-        } catch (SQLException ex) {
+        Pokemon p = listaPokemons.get(String.valueOf(contador+1));
+        if (p != null){
+            nombrePokemon.setText(p.nombre);
+            alturaPokemon.setText(p.altura);
+            pesoPokemon.setText(p.peso);
+            especiePokemon.setText(p.especie);
+            habitatPokemon.setText(p.habitat);
+            tipoPokemon1.setText(p.tipo1);
+            tipoPokemon2.setText(p.tipo2);
+            descripcion.setText("Habilidad: \n" + p.descripcionPokemon);
+        }
+        else{
+            nombrePokemon.setText("NO HAY DATOS");
         }
         contador ++;
         if (contador >=649){
             contador = 649;
         }
         
+        
     }//GEN-LAST:event_derActionPerformed
 
+    private void shinyActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_shinyActionPerformed
+        if (shiny.isSelected()) {
+            try {
+                imagen1 = ImageIO.read(getClass().getResource("/imagenes/shinysPokemon.png"));
+                
+            } catch (IOException ex) {
+            }
+        } else {
+            try {
+                imagen1 = ImageIO.read(getClass().getResource("/imagenes/black-white.png"));
+               
+            } catch (IOException ex) {
+            }
+            dibujaElPokemonQueEstaEnLaPosicion(contador);
+    }//GEN-LAST:event_shinyActionPerformed
+    }
     /**
      * @param args the command line arguments
      */
@@ -228,11 +325,24 @@ public class VentanaPokedex extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JLabel Especie;
+    private javax.swing.JLabel Habitat;
+    private javax.swing.JLabel Nombre;
+    private javax.swing.JLabel Peso;
+    private javax.swing.JLabel Pokedex;
+    private javax.swing.JLabel Tipos;
+    private javax.swing.JLabel altura;
+    private javax.swing.JLabel alturaPokemon;
     private javax.swing.JButton der;
+    private javax.swing.JTextArea descripcion;
+    private javax.swing.JLabel especiePokemon;
+    private javax.swing.JLabel habitatPokemon;
     private javax.swing.JPanel imagenPokemon;
     private javax.swing.JButton izq;
-    private javax.swing.JLabel jLabel1;
-    private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel nombrePokemon;
+    private javax.swing.JLabel pesoPokemon;
+    private javax.swing.JToggleButton shiny;
+    private javax.swing.JLabel tipoPokemon1;
+    private javax.swing.JLabel tipoPokemon2;
     // End of variables declaration//GEN-END:variables
 }
